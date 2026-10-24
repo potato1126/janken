@@ -27,7 +27,7 @@ public class JankenAuthConfiguration {
             .logoutUrl("/logout")
             .logoutSuccessUrl("/")) // ログアウト後に / にリダイレクト
         .authorizeHttpRequests(authz -> authz
-            .requestMatchers("/janken/**").authenticated() // /sample3/以下は認証済みであること
+            .requestMatchers("/janken/**","/match/**").authenticated() // /sample3/以下は認証済みであること
             .anyRequest().permitAll())// 上記以外は全員アクセス可能
             .csrf(csrf -> csrf
             .ignoringRequestMatchers("/h2-console/*", "/sample2*/**")) // sample2用にCSRF対策を無効化

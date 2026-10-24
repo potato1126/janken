@@ -23,6 +23,10 @@ public class Match {
     return user2;
   }
 
+  public void setUser1(int user1) {
+    this.user1 = user1;
+  }
+
   public void setUser2(int user2) {
     this.user2 = user2;
   }

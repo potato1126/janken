@@ -9,10 +9,10 @@
 <body>
   <a href="/logout">ログアウト</a>
   <h1>Match</h1>
-  <h1>[[${login_user}]] vs [[${enemyid.name}]]</h1>
-  <a th:href="@{/jankengame(hand='グー')}">グー</a>
-  <a th:href="@{/jankengame(hand='チョキ')}">チョキ</a>
-  <a th:href="@{/jankengame(hand='パー')}">パー</a>
+  <h1>[[${login_user}]] vs [[${enemy.name}]]</h1>
+  <a th:href="@{/fight(hand ='Gu', id=${enemy.id})}">グー</a>
+  <a th:href="@{/fight(hand='Choki', id=${enemy.id})}">チョキ</a>
+  <a th:href="@{/fight(hand='Pa' , id=${enemy.id})}">パー</a>
 
   <div th:if="${janken}">
     <p>あなたの手：[[${janken.playerHand}]]</p>
