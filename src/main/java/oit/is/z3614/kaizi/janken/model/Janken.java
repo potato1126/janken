@@ -7,16 +7,16 @@ public class Janken {
 
   public Janken(String playerHand) {
     this.playerHand = playerHand;
-    this.cpuHand = "グー";
+    this.cpuHand = "Gu";
     this.result = judge(this.playerHand, this.cpuHand);
   }
 
   private String judge(String player, String cpu) {
     if (player.equals(cpu)) {
       return "あいこ";
-    } else if (player.equals("グー") && cpu.equals("チョキ")
-        || (player.equals("パー") && cpu.equals("グー"))
-        || (player.equals("チョキ") && cpu.equals("パー"))) {
+    } else if (player.equals("Gu") && cpu.equals("Choki")
+        || (player.equals("Pa") && cpu.equals("Gu"))
+        || (player.equals("Choki") && cpu.equals("Pa"))) {
       return "勝ち";
     }
     return "負け";
@@ -26,7 +26,7 @@ public class Janken {
     return playerHand;
   }
 
-  public String getCpuHand(){
+  public String getCpuHand() {
     return cpuHand;
   }
 

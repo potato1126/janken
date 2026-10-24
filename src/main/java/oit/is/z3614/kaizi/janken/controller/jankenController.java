@@ -48,10 +48,28 @@ public class jankenController {
 
   @GetMapping("/match")
   public String match(@RequestParam Integer id, Principal prin, ModelMap model) {
-    User enemyid = userMapper.selectById(id);
+    User enemy = userMapper.selectById(id);
 
-    model.addAttribute("login_user",prin.getName());
-    model.addAttribute("enemyid",enemyid);
+    model.addAttribute("login_user", prin.getName());
+    model.addAttribute("enemy", enemy);
+    return "match.html";
+  }
+
+  @GetMapping("/fight")
+  public String fight(@RequestParam String hand, @RequestParam Integer id, Principal prin, ModelMap model) {
+    User me = userMapper.selectByname(prin.getName());
+    User enemy = userMapper.selectById(id);
+    Janken janken = new Janken(hand);
+
+    Match match = new Match();
+    match.setUser1(me.getId());
+    match.setUser2(enemy.getId());
+    match.setUser1Hand(janken.getPlayerHand());
+    match.setUser2Hand(janken.getCpuHand());
+    matchMapper.insertMatch(match);
+    model.addAttribute("login_user", prin.getName());
+    model.addAttribute("enemy", enemy);
+    model.addAttribute("janken", janken);
     return "match.html";
   }
 
