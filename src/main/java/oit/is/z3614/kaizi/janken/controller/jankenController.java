@@ -13,6 +13,8 @@ import oit.is.z3614.kaizi.janken.model.Entry;
 import oit.is.z3614.kaizi.janken.model.Janken;
 import oit.is.z3614.kaizi.janken.model.User;
 import oit.is.z3614.kaizi.janken.model.UserMapper;
+import oit.is.z3614.kaizi.janken.model.Match;
+import oit.is.z3614.kaizi.janken.model.MatchMapper;
 
 @Controller
 public class jankenController {
@@ -21,6 +23,8 @@ public class jankenController {
   private Entry entry;
   @Autowired
   UserMapper userMapper;
+  @Autowired
+  MatchMapper matchMapper;
 
   /**
    *
@@ -33,15 +37,18 @@ public class jankenController {
   public String janken(ModelMap model, Principal prin) {
     String loginUser = prin.getName(); // ログインユーザ情報
     ArrayList<User> users = userMapper.selectAllUsers();
+    ArrayList<Match> matches = matchMapper.selectAllMatches();
     model.addAttribute("login_user", loginUser);
     this.entry.addUser(loginUser);
     model.addAttribute("entry", this.entry);
     model.addAttribute("users", users);
+    model.addAttribute("matches", matches);
     return "janken.html";
   }
 
   @PostMapping("/janken")
   public String janken(@RequestParam String name, ModelMap model) {
+
     model.addAttribute("name", name);
     return "janken.html";
   }
