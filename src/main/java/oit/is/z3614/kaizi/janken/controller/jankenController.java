@@ -64,16 +64,28 @@ public class jankenController {
   @GetMapping("/fight")
   public String fight(@RequestParam String hand, @RequestParam Integer id, Principal prin, ModelMap model) {
     User me = userMapper.selectByname(prin.getName());
+    MatchInfo waiting = matchInfoMapper.selectWaitingMatchInfo(id, me.getId());
 
-    MatchInfo matchInfo = new MatchInfo();
-    matchInfo.setUser1(me.getId());
-    matchInfo.setUser2(id);
-    matchInfo.setUser1Hand(hand);
-    matchInfo.setIsActive(true);
-    matchInfoMapper.insertMatchInfo(matchInfo);
+    if (waiting == null) {
+      MatchInfo matchInfo = new MatchInfo();
+      matchInfo.setUser1(me.getId());
+      matchInfo.setUser2(id);
+      matchInfo.setUser1Hand(hand);
+      matchInfo.setIsActive(true);
+      matchInfoMapper.insertMatchInfo(matchInfo);
+    } else {
+      Match match = new Match();
+      match.setUser1(waiting.getUser1());
+      match.setUser2(me.getId());
+      match.setUser1Hand(waiting.getUser1Hand());
+      match.setUser2Hand(hand);
+      match.setIsActive(true);
+      matchMapper.insertMatch(match);
+
+      matchInfoMapper.updateInactive(waiting.getId());
+    }
 
     model.addAttribute("login_user", prin.getName());
-
     return "wait.html";
   }
 
