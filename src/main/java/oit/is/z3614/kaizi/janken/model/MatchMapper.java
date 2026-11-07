@@ -13,6 +13,6 @@ public interface MatchMapper {
   @Select("SELECT * FROM matches")
   ArrayList<Match> selectAllMatches();
 
-  @Insert("insert into matches (user1, user2, user1Hand, user2Hand) values(#{user1},#{user2},#{user1Hand},#{user2Hand})")
+  @Insert("insert into matches (user1, user2, user1Hand, user2Hand, isActive) values(#{user1},#{user2},#{user1Hand},#{user2Hand}, #{isActive})")
   void insertMatch(Match match);
 }
