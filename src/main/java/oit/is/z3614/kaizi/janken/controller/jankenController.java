@@ -8,18 +8,20 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import oit.is.z3614.kaizi.janken.model.Entry;
 import oit.is.z3614.kaizi.janken.model.Janken;
 import oit.is.z3614.kaizi.janken.model.User;
 import oit.is.z3614.kaizi.janken.model.UserMapper;
+import oit.is.z3614.kaizi.janken.service.AsyncKekka;
 import oit.is.z3614.kaizi.janken.model.Match;
 import oit.is.z3614.kaizi.janken.model.MatchMapper;
 import oit.is.z3614.kaizi.janken.model.MatchInfo;
 import oit.is.z3614.kaizi.janken.model.MatchInfoMapper;
 
 @Controller
-public class jankenController {
+public class JankenController {
 
   @Autowired
   private Entry entry;
@@ -29,6 +31,9 @@ public class jankenController {
   MatchMapper matchMapper;
   @Autowired
   MatchInfoMapper matchInfoMapper;
+
+  @Autowired
+  AsyncKekka asyncKekka;
 
   /**
    *
@@ -80,13 +85,20 @@ public class jankenController {
       match.setUser1Hand(waiting.getUser1Hand());
       match.setUser2Hand(hand);
       match.setIsActive(true);
-      matchMapper.insertMatch(match);
+      asyncKekka.syncInsertMatch(match);
 
       matchInfoMapper.updateInactive(waiting.getId());
     }
 
     model.addAttribute("login_user", prin.getName());
     return "wait.html";
+  }
+
+  @GetMapping("/result")
+  public SseEmitter result() {
+    SseEmitter emitter = new SseEmitter();
+    asyncKekka.asyncShowResult(emitter);
+    return emitter;
   }
 
   @PostMapping("/janken")
