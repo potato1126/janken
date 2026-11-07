@@ -15,6 +15,8 @@ import oit.is.z3614.kaizi.janken.model.User;
 import oit.is.z3614.kaizi.janken.model.UserMapper;
 import oit.is.z3614.kaizi.janken.model.Match;
 import oit.is.z3614.kaizi.janken.model.MatchMapper;
+import oit.is.z3614.kaizi.janken.model.MatchInfo;
+import oit.is.z3614.kaizi.janken.model.MatchInfoMapper;
 
 @Controller
 public class jankenController {
@@ -25,6 +27,8 @@ public class jankenController {
   UserMapper userMapper;
   @Autowired
   MatchMapper matchMapper;
+  @Autowired
+  MatchInfoMapper matchInfoMapper;
 
   /**
    *
@@ -38,11 +42,13 @@ public class jankenController {
     String loginUser = prin.getName(); // ログインユーザ情報
     ArrayList<User> users = userMapper.selectAllUsers();
     ArrayList<Match> matches = matchMapper.selectAllMatches();
+    ArrayList<MatchInfo> activeMatches = matchInfoMapper.selectActiveMatchInfo();
     model.addAttribute("login_user", loginUser);
     this.entry.addUser(loginUser);
     model.addAttribute("entry", this.entry);
     model.addAttribute("users", users);
     model.addAttribute("matches", matches);
+    model.addAttribute("activeMatches", activeMatches);
     return "janken.html";
   }
 
@@ -58,19 +64,17 @@ public class jankenController {
   @GetMapping("/fight")
   public String fight(@RequestParam String hand, @RequestParam Integer id, Principal prin, ModelMap model) {
     User me = userMapper.selectByname(prin.getName());
-    User enemy = userMapper.selectById(id);
-    Janken janken = new Janken(hand);
 
-    Match match = new Match();
-    match.setUser1(me.getId());
-    match.setUser2(enemy.getId());
-    match.setUser1Hand(janken.getPlayerHand());
-    match.setUser2Hand(janken.getCpuHand());
-    matchMapper.insertMatch(match);
+    MatchInfo matchInfo = new MatchInfo();
+    matchInfo.setUser1(me.getId());
+    matchInfo.setUser2(id);
+    matchInfo.setUser1Hand(hand);
+    matchInfo.setIsActive(true);
+    matchInfoMapper.insertMatchInfo(matchInfo);
+
     model.addAttribute("login_user", prin.getName());
-    model.addAttribute("enemy", enemy);
-    model.addAttribute("janken", janken);
-    return "match.html";
+
+    return "wait.html";
   }
 
   @PostMapping("/janken")
